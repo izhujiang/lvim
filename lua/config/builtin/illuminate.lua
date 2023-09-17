@@ -1,0 +1,2 @@
+lvim.lsp.buffer_mappings.normal_mode["]r"] = { require("illuminate").goto_next_reference, "Next Reference" }
+lvim.lsp.buffer_mappings.normal_mode["[r"] = { require("illuminate").goto_prev_reference, "Next Diagnostic" }

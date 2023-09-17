@@ -1,0 +1,8 @@
+{
+  "Lua.hint.enable": true,
+  "Lua.diagnostics.globals": {
+    "vim",
+    "jit",
+    "lvim"
+  },
+}

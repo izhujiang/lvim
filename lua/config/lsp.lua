@@ -3,11 +3,12 @@
 -- :LvimInfo  -- Contains information about all the servers attached to the buffer you are editing and their current capabilities,
 -- :LspInfo   -- Contains basic information about all the servers that are running.
 -- :Mason     -- Contains information about all the servers that you can manage with mason
+
 -- 5.1 Language servers
 -- LunarVim uses filetype plugins to enable lazy-loading the setup of a language server.
 -- lvim.lsp.automatic_configuration.skipped_servers contains a list of servers that will not be automatically configured by default.
 -- Any changes to lvim.lsp.automatic_configuration.skipped_servers must be followed by :LvimCacheReset to take effect.
---
+
 -- Installing and updating a server
 -- LunarVim uses filetype plugins to enable lazy-loading the setup of a language server. A template generator is used to create ftplugin files and populate them with the setup call.
 -- lvim.lsp.automatic_servers_installation = false
@@ -34,31 +35,48 @@
 -- 5.2 Linting and formatting
 -- Setting a formatter will override the language server formatting capabilities.
 -- The easiest way is to reference the linter/formatter/code_actions by their names. See the null-ls docs (https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md) for a full list of builtins with their names.
+
 lvim.lsp.installer.setup = {
+  -- install lsp server on demand
   ensure_installed = {
-    "bashls",
-    "clangd",
-    "cssls",
+    -- "bashls",
+    -- "clangd",
+    -- "cssls",
     -- "denols",
-    "dockerls",
+    -- "dockerls",
     -- "docker_compose_language_service",
-    "gopls",
-    "html",
+    -- "gopls",
+    -- "html",
     "jsonls",
     "lua_ls",
-    "marksman",
-    "pyright",
-    "ruff_lsp",
-    "solargraph",
-    "taplo",
-    "tsserver", -- confix with denols
-    "vimls",
-    "yamlls",
+    -- "marksman",
+    -- "pyright",
+    -- "ruff_lsp",
+    -- "solargraph",
+    -- "taplo",
+    -- "tsserver", -- confix with denols
+    -- "vimls",
+    -- "yamlls",
   },
   automatic_installation = {
     exclude = {},
   },
 }
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver" })
+-- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+--   return server ~= "denols"
+-- end, lvim.lsp.automatic_configuration.skipped_servers)
+
+-- lvim.lsp.on_init_callback = function()
+-- local Util = require("util")
+-- if Util.lsp_get_config("denols") and Util.lsp_get_config("tsserver") then
+--   local is_deno = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
+--   Util.lsp_disable("tsserver", is_deno)
+--   Util.lsp_disable("denols", function(root_dir)
+--     return not is_deno(root_dir)
+--   end)
+-- end
+-- end
 
 local formatters = require("lvim.lsp.null-ls.formatters")
 local null_ls = require("null-ls")

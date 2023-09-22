@@ -23,7 +23,6 @@ return {
       local Util = require("util")
       Util.on_very_lazy(function()
         vim.notify = require("notify") -- setting it as default notify function, so other plugins can use the notification windows by calling vim.notify(msg)
-        vim.notify("nvim-notify init")
       end)
     end,
   },

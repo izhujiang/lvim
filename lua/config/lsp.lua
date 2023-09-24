@@ -3,6 +3,7 @@
 -- :LvimInfo  -- Contains information about all the servers attached to the buffer you are editing and their current capabilities,
 -- :LspInfo   -- Contains basic information about all the servers that are running.
 -- :Mason     -- Contains information about all the servers that you can manage with mason
+--:LvimCacheReset
 
 -- 5.1 Language servers
 -- LunarVim uses filetype plugins to enable lazy-loading the setup of a language server.
@@ -29,15 +30,16 @@
 -- 2) By overriding the setup (*)
 -- Add the server you wish to configure manually to lvim.lsp.automatic_configuration.skipped_servers.
 -- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "sumneko_lua" })
--- Now you can set it up manually using the builtin lsp manager in $LUNARVIM_CONFIG_DIR/ftplugin/<filetype>.lua
---
---
+-- setup server using the builtin lsp manager in $LUNARVIM_CONFIG_DIR/ftplugin/<filetype>.lua
+
 -- 5.2 Linting and formatting
 -- Setting a formatter will override the language server formatting capabilities.
 -- The easiest way is to reference the linter/formatter/code_actions by their names. See the null-ls docs (https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md) for a full list of builtins with their names.
 
+-- Installing linters/formatters
+-- use :Mason to install most of the supported linters and formatters
+-- Or install lsp server on demand
 lvim.lsp.installer.setup = {
-  -- install lsp server on demand
   ensure_installed = {
     -- "bashls",
     -- "clangd",
@@ -47,8 +49,8 @@ lvim.lsp.installer.setup = {
     -- "docker_compose_language_service",
     -- "gopls",
     -- "html",
-    "jsonls",
-    "lua_ls",
+    -- "jsonls",
+    -- "lua_ls",
     -- "marksman",
     -- "pyright",
     -- "ruff_lsp",
@@ -63,102 +65,34 @@ lvim.lsp.installer.setup = {
   },
 }
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver" })
+
 -- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
 --   return server ~= "denols"
 -- end, lvim.lsp.automatic_configuration.skipped_servers)
 
--- lvim.lsp.on_init_callback = function()
--- local Util = require("util")
--- if Util.lsp_get_config("denols") and Util.lsp_get_config("tsserver") then
---   local is_deno = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
---   Util.lsp_disable("tsserver", is_deno)
---   Util.lsp_disable("denols", function(root_dir)
---     return not is_deno(root_dir)
---   end)
--- end
--- end
-
-local formatters = require("lvim.lsp.null-ls.formatters")
 local null_ls = require("null-ls")
 
-formatters.setup({
-  null_ls.builtins.formatting.black, -- python
-  null_ls.builtins.formatting.ruff, -- python
-  -- null_ls.builtins.formatting.flake8,   -- python
-  -- null_ls.builtins.formatting.autopep8, -- python
-  null_ls.builtins.formatting.isort, -- python
-  null_ls.builtins.formatting.beautysh, -- sh
-  null_ls.builtins.formatting.shfmt,
-  null_ls.builtins.formatting.clang_format,
-  null_ls.builtins.formatting.cmake_format,
-  -- null_ls.builtins.formatting.eslint,
-  -- null_ls.builtins.formatting.prettier,
-  null_ls.builtins.formatting.rome,
-  null_ls.builtins.formatting.deno_fmt,
-  -- null_ls.builtins.formatting.gofmt,
-  null_ls.builtins.formatting.gofumpt,
-  null_ls.builtins.formatting.goimports,
-  null_ls.builtins.formatting.google_java_format,
-  null_ls.builtins.formatting.jq, --json
-  -- null_ls.builtins.formatting.lua_format,
-  null_ls.builtins.formatting.stylua,
-  null_ls.builtins.formatting.markdownlint,
-  -- null_ls.builtins.formatting.nginx_beautifier,
-  null_ls.builtins.formatting.pg_format, -- sql, pgsql
-  null_ls.builtins.formatting.sqlfmt,
-  -- null_ls.builtins.formatting.prismaFmt,
-  -- null_ls.builtins.formatting.rustfmt
-  null_ls.builtins.formatting.yamlfmt,
-
-  -- {
-  --   name = "prettier",
-  --   ---@usage arguments to pass to the formatter
-  --   -- these cannot contain whitespace
-  --   -- options such as `--line-width 80` become either `{"--line-width", "80"}` or `{"--line-width=80"}`
-  --   args = { "--print-width", "100" },
-  --   ---@usage only start in these filetypes, by default it will attach to all filetypes it supports
-  --   filetypes = { "typescript", "typescriptreact" },
-  -- },
-})
+-- formatters.setup({
+--   -- null_ls.builtins.formatting.stylua,
+-- })
 
 local linters = require("lvim.lsp.null-ls.linters")
 linters.setup({
-  -- { name = "shellcheck", args = { "--severity", "warning" }, },
-  null_ls.builtins.diagnostics.actionlint, -- GitHub Actions workflow files.
-  null_ls.builtins.diagnostics.checkmake,
-  null_ls.builtins.diagnostics.cmake_lint,
   null_ls.builtins.diagnostics.codespell,
-  null_ls.builtins.diagnostics.commitlint,
-  -- null_ls.builtins.diagnostics.dotenv_linter,   -- NOT working, why?
-  { name = "dotenv_linter" },
-  -- null_ls.builtins.diagnostics.eslint,
-  -- { name = "flake8" },
-  -- null_ls.builtins.diagnostics.flake8,
-  null_ls.builtins.diagnostics.ruff,
-  null_ls.builtins.diagnostics.golangci_lint,
-  null_ls.builtins.diagnostics.selene,
-  null_ls.builtins.diagnostics.markdownlint,
-  null_ls.builtins.diagnostics.vint,
 })
 
 local code_actions = require("lvim.lsp.null-ls.code_actions")
 code_actions.setup({
-  --  { name = "proselint" },
   null_ls.builtins.code_actions.gitsigns,
-  null_ls.builtins.code_actions.gomodifytags,
-  null_ls.builtins.code_actions.impl,
   null_ls.builtins.code_actions.refactoring,
 })
 
--- Installing linters/formatters
--- use :Mason to install most of the supported linters and formatters
-
 -- Lazy-loading the linter/formatter/code_actions setup
 -- By default, all null-ls providers are checked on startup.
--- If you want to avoid that or want to only set up the provider when you opening the associated file-type, then you can use filetype plugins for this purpose.
---
+-- set up the provider when opening the associated file-type
+-- config provider in $LUNARVIM_CONFIG_DIR/after/ftplugin/
+
 -- Formatting on save
--- lvim.format_on_save = true
 lvim.format_on_save.enabled = true
 lvim.format_on_save.pattern = { "*.lua", "*.py", "*.go", "*.js", "*.ts", "*.c", "*.cpp", "*.h", "*.html", "*.css" }
 

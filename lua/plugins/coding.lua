@@ -13,7 +13,9 @@ return {
   { -- Tabnine client for Neovim
     "codota/tabnine-nvim",
     -- TODO: try to fix config issue later
-    enabled = false,
+    cond = function()
+      return vim.loop.os_uname().machine ~= "aarch64"
+    end,
     dependencies = {
       { "nvim-lualine/lualine.nvim" },
     },

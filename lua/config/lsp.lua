@@ -61,11 +61,15 @@ lvim.lsp.installer.setup = {
     -- "yamlls",
   },
   automatic_installation = {
-    exclude = {},
+    exclude = { "astro" },
   },
 }
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver" })
 
+-- Add the servers to configure manually,
+-- set it up using the builtin lsp manager in $LUNARVIM_CONFIG_DIR/ftplugin/<filetype>.lua
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver", "astro" })
+
+-- enable the servers to configure automatically
 -- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
 --   return server ~= "denols"
 -- end, lvim.lsp.automatic_configuration.skipped_servers)

@@ -47,7 +47,6 @@ require("lvim.lsp.manager").setup("tsserver", {
     { "<leader>cR", "<cmd>TypescriptRenameFile<CR>", desc = "Rename File" },
   },
 })
--- end
 
 -- local Util = require("util")
 -- if Util.lsp_get_config("denols") and Util.lsp_get_config("tsserver") then

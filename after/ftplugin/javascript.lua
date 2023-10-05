@@ -2,6 +2,7 @@ local formatters = require("lvim.lsp.null-ls.formatters")
 local null_ls = require("null-ls")
 
 formatters.setup({
+  -- null_ls.builtins.formatting.rome,
   null_ls.builtins.formatting.prettier.with({
     condition = function(utils)
       return utils.root_has_file({ "package.json" })

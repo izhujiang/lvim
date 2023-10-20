@@ -17,6 +17,5 @@ require("lvim.lsp.manager").setup("astro", {
       new_config.init_options.typescript.serverPath = typescript.resolve_tsserver(install_dir, workspace_dir)
       new_config.init_options.typescript.tsdk = typescript.resolve_tsdk(install_dir, workspace_dir)
     end
-    print(vim.inspect(new_config.init_options.typescript))
   end,
 })

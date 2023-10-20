@@ -22,6 +22,7 @@ require("lvim.lsp.manager").setup("denols", {
 -- else
 require("lvim.lsp.manager").setup("tsserver", {
   root_dir = require("lspconfig").util.root_pattern("package.json"),
+  single_file_support = false,
   settings = {
     typescript = {
       format = {

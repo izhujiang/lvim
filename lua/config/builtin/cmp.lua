@@ -13,8 +13,8 @@ lvim.builtin.cmp.matching = {
 
 lvim.builtin.cmp.sources = cmp.config.sources(
   { -- group 1
-    { name = "nvim_lsp", priority = 700, keyword_length = 1 },
-    { name = "cmp_tabnine", priority = 900 },
+    { name = "nvim_lsp", priority = 900, keyword_length = 1 },
+    { name = "cmp_tabnine", priority = 700 },
     { name = "luasnip", priority_ = 500 },
     { name = "nvim_lua" },
   },

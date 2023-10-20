@@ -5,7 +5,9 @@ formatters.setup({
   null_ls.builtins.formatting.stylua,
 })
 
-local linters = require("lvim.lsp.null-ls.linters")
-linters.setup({
-  null_ls.builtins.diagnostics.selene,
-})
+if vim.loop.os_uname().machine ~= "aarch64" then
+  local linters = require("lvim.lsp.null-ls.linters")
+  linters.setup({
+    null_ls.builtins.diagnostics.selene,
+  })
+end

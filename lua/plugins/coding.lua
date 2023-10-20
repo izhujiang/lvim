@@ -8,6 +8,10 @@ return {
     "tzachar/cmp-tabnine",
     build = "./install.sh",
     event = "InsertEnter",
+
+    cond = function()
+      return vim.loop.os_uname().machine ~= "aarch64"
+    end,
   },
 
   { -- Tabnine client for Neovim
@@ -58,7 +62,7 @@ return {
           -- disable copilot.lua's suggestion and panel modules, as they can interfere with completions properly appearing in copilot-cmp.
           suggestion = { enabled = false },
           panel = { enabled = false },
-        })                             -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+        }) -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
         require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
       end, 100)
     end,

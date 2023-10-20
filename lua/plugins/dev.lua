@@ -6,9 +6,8 @@ return {
       "jose-elias-alvarez/null-ls.nvim",
     },
     event = "VeryLazy",
-    opts = {
-      -- opts to list sources here, when available in mason.
-      ensure_installed = {
+    config = function()
+      local ensure_installed = {
         "black",
         "actionlint",
         "cmakelang",
@@ -28,17 +27,20 @@ return {
         "rome",
         "ruff",
         "shfmt",
-        "selene",
         "stylua",
         "shellcheck",
         "vint",
-      },
-      automatic_installation = false, -- disable automatic, due to mason-null-ls missing tools like makecheck in null-ls list
-      -- automatic_installation = { exclude = { "rust_analyzer", "solargraph" } }
-    },
+      }
 
-    config = function(_, opts)
-      require("mason-null-ls").setup(opts)
+      if vim.loop.os_uname().machine ~= "aarch64" then
+        vim.list_extend(ensure_installed, { "selene" })
+      end
+
+      require("mason-null-ls").setup({
+        automatic_installation = false, -- disable automatic, due to mason-null-ls missing tools like makecheck in null-ls list
+        ensure_installed = ensure_installed,
+        -- automatic_installation = { exclude = { "rust_analyzer", "solargraph" } }
+      })
     end,
   },
 

@@ -24,20 +24,13 @@ require("lvim.lsp.manager").setup("tsserver", {
   root_dir = require("lspconfig").util.root_pattern("package.json"),
   single_file_support = false,
   settings = {
-    typescript = {
-      format = {
-        indentSize = vim.o.shiftwidth,
-        convertTabsToSpaces = vim.o.expandtab,
-        tabSize = vim.o.tabstop,
-      },
-    },
-    javascript = {
-      format = {
-        indentSize = vim.o.shiftwidth,
-        convertTabsToSpaces = vim.o.expandtab,
-        tabSize = vim.o.tabstop,
-      },
-    },
+    -- typescript = {
+    --   format = {
+    --     indentSize = vim.o.shiftwidth,
+    --     convertTabsToSpaces = vim.o.expandtab,
+    --     tabSize = vim.o.tabstop,
+    --   },
+    -- },
     completions = {
       completeFunctionCalls = true,
     },
@@ -45,7 +38,7 @@ require("lvim.lsp.manager").setup("tsserver", {
 
   keys = {
     { "<leader>co", "<cmd>TypescriptOrganizeImports<CR>", desc = "Organize Imports" },
-    { "<leader>cR", "<cmd>TypescriptRenameFile<CR>", desc = "Rename File" },
+    { "<leader>cR", "<cmd>TypescriptRenameFile<CR>",      desc = "Rename File" },
   },
 })
 

@@ -45,19 +45,185 @@
 -- lunarvim/onedarker.nvim	                    Onedark inspired colorscheme written in lua.	optional
 -- lukas-reineke/indent-blankline.nvim	        Indent guides for Neovim	optional
 
--- disable builtin plugins and keybindings
-lvim.builtin.nvimtree.active = false
-lvim.builtin.lir.active = false
+-- treesitter
+-- require("leovim.config.builtin.treesitter")
+vim.list_extend(lvim.builtin.treesitter.ensure_installed, {
+  "bash",
+  "c",
+  "cpp",
+  "css",
+  "diff",
+  "gitcommit",
+  "go",
+  "html",
+  "javascript",
+  "lua",
+  "python",
+  "rust",
+  "toml",
+  "typescript",
+  "yaml",
+})
 
-require("config.builtin.treesitter")
-require("config.builtin.telescope")
-require("config.builtin.cmp")
-require("config.builtin.bufferline")
-require("config.builtin.illuminate")
-require("config.builtin.toggleterm")
-require("config.builtin.gitsigns")
-require("config.builtin.dap")
+lvim.builtin.treesitter.indent = {
+  enable = true,
+  disable = { "python", "css", "yaml" },
+}
 
+lvim.builtin.treesitter.incremental_selection = {
+  enable = true,
+  keymaps = {
+    init_selection = "<C-space>",
+    node_incremental = "<C-space>",
+    scope_incremental = false,
+    node_decremental = "<bs>",
+  },
+}
+
+-- cmp
+-- require("leovim.config.builtin.cmp")
+lvim.builtin.cmp.sources = {
+  -- TODO: add copilot
+  -- {
+  --   name = "copilot",
+  --   -- keyword_length = 0,
+  --   max_item_count = 3,
+  --   trigger_characters = {
+  --     {
+  --       ".",
+  --       ":",
+  --       "(",
+  --       "'",
+  --       '"',
+  --       "[",
+  --       ",",
+  --       "#",
+  --       "*",
+  --       "@",
+  --       "|",
+  --       "=",
+  --       "-",
+  --       "{",
+  --       "/",
+  --       "\\",
+  --       "+",
+  --       "?",
+  --       " ",
+  --       -- "\t",
+  --       -- "\n",
+  --     },
+  --   },
+  -- },
+
+  {
+    name = "nvim_lsp",
+    priority = 900,
+    keyword_length = 1,
+    group_index = 1,
+    entry_filter = function(entry, ctx)
+      local kind = require("cmp.types.lsp").CompletionItemKind[entry:get_kind()]
+      if kind == "Snippet" and ctx.prev_context.filetype == "java" then
+        return false
+      end
+      return true
+    end,
+  },
+  {
+    name = "luasnip",
+    priority = 500,
+    group_index = 1,
+  },
+  -- { name = "cmp_tabnine" },
+  {
+    name = "nvim_lua",
+    group_index = 1,
+  },
+
+  {
+    name = "path",
+    group_index = 2,
+  },
+  {
+    name = "buffer",
+    group_index = 2,
+  },
+  -- { name = "calc" },
+  {
+    name = "emoji",
+    group_index = 2,
+  },
+  {
+    name = "treesitter",
+    group_index = 2,
+  },
+  -- { name = "crates" },
+  -- { name = "tmux" },
+}
+lvim.builtin.cmp.cmdline.enable = true
+
+-- telescope
+-- require("leovim.config.builtin.telescope")
+-- TODO: disable preview when searching for colorscheme, register ...
+lvim.builtin.telescope = vim.tbl_deep_extend("force", lvim.builtin.telescope, {
+  defaults = {
+    file_ignore_patterns = { ".git/" },
+    mappings = {
+      i = {
+        ["<C-f>"] = function(...)
+          local actions = require("telescope.actions")
+          return actions.preview_scrolling_down(...)
+        end,
+        ["<C-b>"] = function(...)
+          local actions = require("telescope.actions")
+          return actions.preview_scrolling_up(...)
+        end,
+        ["<esc>"] = function()
+          local actions = require("telescope.actions")
+          actions.close()
+        end,
+      },
+      n = {
+        ["q"] = function()
+          local actions = require("telescope.actions")
+          actions.close()
+        end,
+      },
+    },
+    sorting_strategy = "ascending", -- display results top->bottom
+    layout_strategy = "horizontal",
+    layout_config = {
+      anchor = "N",
+      height = 0.9,
+      width = 0.9,
+      prompt_position = "top",
+      preview_cutoff = 80, -- preview disable when column less than preview_cutoff
+    },
+  },
+})
+
+lvim.builtin.telescope.on_config_done = function(telescope)
+  -- fzf and projects are loaded via lunarvim (.local/share/lunarvim/lvim/lua/lvim/core/tbl_deep_extend.lua)
+  pcall(telescope.load_extension, "notify")
+end
+
+-- toggleterm
+-- require("leovim.config.builtin.toggleterm")
+lvim.builtin.terminal = vim.tbl_deep_extend("force", lvim.builtin.terminal, {
+  size = function(term)
+    if term.direction == "horizontal" then
+      return vim.o.lines * 0.4
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.4
+    else
+      return 0
+    end
+  end,
+
+  open_mapping = [[<M-\>]],
+  -- DON'T use lvim.builtin.terminal.execs, define keybindings directly
+  execs = {},
+})
+--
 -- 4.2 User plugins
 -- More useful plugins: https://www.lunarvim.org/docs/configuration/plugins/example-configurations
-lvim.plugins = require("plugins")
+lvim.plugins = require("leovim.plugins")

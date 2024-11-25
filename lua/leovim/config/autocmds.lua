@@ -72,7 +72,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
-
 -- close_if_last_window: close all non-normal windows when the last normal window is closed
 -- When using `:quit`, `:wq` or `:qall`, before deciding whether it closes the current window or quits Vim.
 -- For `:wq` the buffer is written before QuitPre is triggered.
@@ -106,13 +105,100 @@ vim.api.nvim_create_autocmd({ "QuitPre" }, {
     local essential_wins = vim.tbl_filter(is_essential_win, wins)
     local win_count = #essential_wins
 
-    if (win_count == 1 and is_essential_win(win_id)) then
+    if win_count == 1 and is_essential_win(win_id) then
       -- close nonessential windows except current window which is closing
       for _, win in ipairs(wins) do
         if win ~= win_id then
           vim.api.nvim_win_close(win, true)
         end
       end
+    end
+  end,
+})
+
+-- TODO: wait for LunarVim fix the issue
+-- BUG: source is registered very single FileType event is triggered.
+-- .local/share/lunarvim/lvim/lua/lvim/lsp/null-ls/linters.lua func setup.
+
+-- walk around
+-- vim.g.null_ls_sources_loaded = {
+--   formatters = {},
+--   linters = {},
+--   code_actions = {},
+-- }
+
+local null_ls_augroup = vim.api.nvim_create_augroup("leovim_" .. "null_ls", { clear = true })
+for _, conf in ipairs(lvim.lsp.null_ls.server_setup) do
+  vim.api.nvim_create_autocmd("FileType", {
+    group = null_ls_augroup,
+    pattern = conf.pattern,
+    callback = function()
+      -- local loaded_sources = vim.g.null_ls_sources_loaded
+
+      if conf.formatters and conf.formatters.sources then
+        local formatters = require("lvim.lsp.null-ls.formatters")
+        local sources = conf.formatters.sources
+
+        if #sources > 0 then
+          -- sources = vim.tbl_filter(function(source)
+          --   return not vim.tbl_contains(loaded_sources.formatters, function(item)
+          --     return vim.deep_equal(item, source)
+          --   end, { predicate = true })
+          -- end, sources)
+
+          -- if #sources > 0 then
+          formatters.setup(sources)
+          -- table.insert(loaded_sources.formatters, sources)
+          -- OR
+          -- vim.list_extend(loaded_sources.formatters, sources)
+          -- end
+        end
+      end
+
+      if conf.linters and conf.linters.sources then
+        local linters = require("lvim.lsp.null-ls.linters")
+        local sources = conf.linters.sources
+
+        if #sources > 0 then
+          -- sources = vim.tbl_filter(function(source)
+          --   return not vim.tbl_contains(loaded_sources.linters, function(item)
+          --     return vim.deep_equal(item, source)
+          --   end, { predicate = true })
+          -- end, sources)
+
+          -- if #sources > 0 then
+          linters.setup(sources)
+          -- vim.list_extend(loaded_sources.linters, sources)
+          -- end
+        end
+      end
+
+      if conf.code_actions and conf.code_actions.sources then
+        local code_actions = require("lvim.lsp.null-ls.code_actions")
+        local sources = conf.code_actions.sources
+
+        if #sources > 0 then
+          -- sources = vim.tbl_filter(function(source)
+          --   return not vim.tbl_contains(loaded_sources.code_actions, function(item)
+          --     return vim.deep_equal(item, source)
+          --   end, { predicate = true })
+          -- end, sources)
+          --
+          -- if #sources > 0 then
+          code_actions.setup(sources)
+          -- vim.list_extend(loaded_sources.code_actions, sources)
+          -- end
+        end
+      end
+    end,
+  })
+end
+
+vim.api.nvim_create_autocmd({ "TermOpen", "WinEnter" }, {
+  group = augroup("termopen"),
+  callback = function()
+    if vim.bo.buftype == "terminal" then
+      vim.cmd("startinsert")
     end
   end,
 })

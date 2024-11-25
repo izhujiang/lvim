@@ -1,17 +1,17 @@
 return {
   -- the colorscheme should be available when starting Neovim
   -- tokyonight, A clean, dark Neovim theme written in Lua, with support for lsp, treesitter and lots of plugins.
-  {
-    "folke/tokyonight.nvim",
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    opts = { style = "moon" },
-    config = true,
-  },
+  -- {
+  --   "folke/tokyonight.nvim",
+  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  --   priority = 1000, -- make sure to load this before all the other start plugins
+  --   opts = { style = "moon" },
+  --   config = true,
+  -- },
+
   {
     -- Everforest is a green based color scheme; it's designed to be warm and soft in order to protect developers' eyes.
     "sainnhe/everforest",
-    -- "sainnhe/sonokai",
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
 
@@ -19,7 +19,7 @@ return {
       { "nvim-lualine/lualine.nvim" },
     },
 
-    config = function()
+    init = function()
       vim.g.everforest_background = "soft"
       vim.g.everforest_better_performance = 1
     end,
@@ -29,6 +29,7 @@ return {
   -- usage:
   -- :colorscheme catppuccin " or catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
   -- TODO: config for integrations with other plugins
+  -- PERF
   {
     "catppuccin/nvim",
     name = "catppuccin",

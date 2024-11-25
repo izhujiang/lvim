@@ -12,7 +12,4 @@ return {
       vim.g.startuptime_tries = 10
     end,
   },
-
-  -- library (async, job) used by other plugins
-  { "nvim-lua/plenary.nvim", lazy = true },
 }

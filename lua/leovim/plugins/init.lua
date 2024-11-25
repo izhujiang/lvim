@@ -1,7 +1,8 @@
-local function compose_plugin_specs()
-  local plugins_root = "plugins"
+local M = {}
+
+local function compose_plugin_specs(plugins_root)
   local function ends_with(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
+    return ending == "" or str:sub(- #ending) == ending
   end
 
   local function scandir(dir)
@@ -26,9 +27,11 @@ local function compose_plugin_specs()
   for _, filename in pairs(fns) do
     local ext_start, _ = string.find(filename, ".lua")
     local plugin_name = string.sub(filename, 1, ext_start - 1)
-    -- if not vim.tbl_contains(M.deactivated_plugins, plugin_name) then
-    local mod = plugins_root .. "." .. plugin_name
-    vim.list_extend(plugins, require(mod))
+    if plugin_name ~= 'init' then
+      -- if not vim.tbl_contains(M.deactivated_plugins, plugin_name) then
+      local mod = plugins_root .. "." .. plugin_name
+      vim.list_extend(plugins, require(mod))
+    end
   end
 
   -- local plugins = {}
@@ -40,4 +43,7 @@ local function compose_plugin_specs()
   return plugins
 end
 
-return compose_plugin_specs()
+local plugins_root = "leovim.plugins"
+M = compose_plugin_specs(plugins_root)
+
+return M
